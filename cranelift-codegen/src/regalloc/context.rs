@@ -216,7 +216,10 @@ impl Context {
             for val in func.dfg.values() {
                 let ty = func.dfg.value_type(val);
                 if ty.lane_type().is_ref() {
-                    panic!("reference types were found but safepoints were not enabled.");
+                    errors.report(
+                        (val, "reference types were found but safepoints were not enabled.")
+                    );
+                    return Err(errors.into());
                 }
             }
         }

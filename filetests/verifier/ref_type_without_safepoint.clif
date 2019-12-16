@@ -1,0 +1,27 @@
+test safepoint
+test verifier
+target x86_64
+
+function %test(i32, r64, r64) -> r64 {
+    ebb0(v0: i32, v1:r64, v2:r64):
+        jump ebb1(v0)
+    ebb1(v3: i32):
+        v4 = irsub_imm v3, 1
+        jump ebb2(v4)
+    ebb2(v5: i32):
+        resumable_trap interrupt
+        brz v5, ebb1(v5)
+        jump ebb3
+    ebb3:
+        v6 = null.r64
+        v7 = is_null v6
+        brnz v7, ebb2(v0)
+        jump ebb4
+    ebb4:
+        brnz v0, ebb5
+        jump ebb6
+    ebb5:
+        return v1
+    ebb6:
+        return v2
+}
